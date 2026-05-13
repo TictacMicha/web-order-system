@@ -6,39 +6,36 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
-// Menggunakan array sebagai Queue untuk menyimpan antrean pesanan
 let orderQueue = []; 
 let orderIdCounter = 1;
 
 app.use(express.static('public'));
 
 io.on('connection', (socket) => {
-    console.log('User terhubung:', socket.id);
-
-    // Kirim antrean saat ini ke chef yang baru terhubung
     socket.emit('updateQueue', orderQueue);
 
-    // Enqueue: Pelanggan membuat pesanan baru
-    socket.on('newOrder', (item) => {
-        const order = { id: orderIdCounter++, item: item, status: 'cooking' };
-        orderQueue.push(order); // Masukkan ke array queue
-        console.log('Pesanan masuk:', order);
-        
-        // Broadcast antrean terbaru ke semua chef
+    socket.on('newOrder', (data) => {
+        const order = { 
+            id: orderIdCounter++, 
+            items: data.items, 
+            namaPelanggan: data.namaPelanggan, 
+            meja: data.nomorMeja, 
+            status: 'cooking' 
+        };
+        orderQueue.push(order); 
         io.emit('updateQueue', orderQueue); 
     });
 
-    // Dequeue: Chef menyelesaikan pesanan
     socket.on('finishOrder', (orderId) => {
-        // Hapus pesanan dari array queue
-        orderQueue = orderQueue.filter(order => order.id !== orderId);
+        const orderIndex = orderQueue.findIndex(order => order.id === orderId);
         
-        // Update layar chef
-        io.emit('updateQueue', orderQueue);
-        
-        // Kirim notifikasi ke pelanggan bahwa makanan siap
-        io.emit('orderReady', orderId);
-        console.log(`Pesanan ${orderId} selesai dan di-dequeue.`);
+        if (orderIndex !== -1) {
+            const finishedOrder = orderQueue[orderIndex];
+            orderQueue.splice(orderIndex, 1);
+            
+            io.emit('updateQueue', orderQueue);
+            io.emit('orderReady', finishedOrder);
+        }
     });
 });
 

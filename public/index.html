@@ -1,22 +1,490 @@
 <!DOCTYPE html>
-<html>
-<head><title>Pelanggan - Pesan Makanan</title></head>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pelanggan - Pesan Makanan</title>
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: #ffffff;
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        
+        #welcomeScreen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #1a1a1a;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+        }
+        .welcome-box {
+            background-color: #2a2a2a;
+            padding: 30px;
+            border-radius: 15px;
+            width: 80%;
+            max-width: 350px;
+            text-align: center;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+        }
+        .welcome-box input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0 20px 0;
+            border: none;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 16px;
+            background-color: #424242;
+            color: white;
+        }
+        .welcome-box input::placeholder {
+            color: #999;
+        }
+        .btn-mulai {
+            width: 100%;
+            padding: 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        #mainApp {
+            display: none;
+            padding: 15px;
+            padding-bottom: 80px;
+        }
+        .header-app {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 15px;
+        }
+        .header-app h3 { margin: 0; }
+        .header-app span { color: #4CAF50; font-weight: bold; }
+        
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+        }
+        .card {
+            background-color: #333333;
+            border-radius: 15px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-bottom: 15px;
+        }
+        .card img {
+            width: 100%;
+            aspect-ratio: 4 / 3;
+            object-fit: cover;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+            margin-bottom: 10px;
+        }
+        .card h3 {
+            font-size: 13px;
+            margin: 0 0 5px 0;
+            text-align: center;
+            font-weight: bold;
+        }
+        .harga-text {
+            font-size: 12px;
+            color: #4CAF50;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .controls {
+            background-color: #555555;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 5px 12px;
+            width: 65%;
+            box-sizing: border-box;
+        }
+        .btn-qty {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 0;
+        }
+        .btn-tambah {
+            background-color: #555555;
+            border: none;
+            color: white;
+            border-radius: 20px;
+            padding: 6px 0;
+            width: 65%;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        .qty-text {
+            font-weight: bold;
+            font-size: 13px;
+        }
+        .btn-cart {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #555555;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 12px 20px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            align-items: center; justify-content: center;
+            z-index: 10;
+        }
+        .modal-content {
+            background: #2a2a2a;
+            padding: 20px;
+            width: 85%;
+            max-width: 400px;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #555;
+            padding-bottom: 10px;
+        }
+        .close-btn {
+            cursor: pointer;
+            font-size: 24px;
+            color: #ff5252;
+            font-weight: bold;
+        }
+        .cart-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 15px 0;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .cart-list li {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #444;
+            font-size: 14px;
+        }
+        .total-container {
+            display: flex;
+            justify-content: space-between;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #4CAF50;
+        }
+        .btn-checkout {
+            width: 100%;
+            padding: 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .qr-container {
+            align-items: center;
+            text-align: center;
+        }
+        .qr-img {
+            width: 200px;
+            height: 200px;
+            background-color: white;
+            padding: 10px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .qr-total {
+            font-size: 24px;
+            font-weight: bold;
+            color: #4CAF50;
+            margin: 10px 0;
+        }
+    </style>
+</head>
 <body>
-    <h2>Pesan Makanan</h2>
-    <button onclick="pesan('Nasi Goreng')">Pesan Nasi Goreng</button>
-    <button onclick="pesan('Mie Ayam')">Pesan Mie Ayam</button>
-    <div id="notifikasi" style="color: green; margin-top: 20px;"></div>
+    
+    <div id="welcomeScreen">
+        <div class="welcome-box">
+            <h2 style="margin-top:0;">Selamat Datang!</h2>
+            <p style="font-size: 14px; color: #aaa; margin-bottom: 25px;">Silakan lengkapi data meja Anda sebelum memesan.</p>
+            
+            <div style="text-align: left;">
+                <label style="font-size: 14px; font-weight: bold;">Nama Anda:</label>
+                <input type="text" id="inputNama" placeholder="Contoh: Budi">
+                
+                <label style="font-size: 14px; font-weight: bold;">Nomor Meja:</label>
+                <input type="number" id="inputMeja" placeholder="Contoh: 12">
+            </div>
+            
+            <button class="btn-mulai" onclick="mulaiPesanan()">Lihat Menu</button>
+        </div>
+    </div>
+
+    <div id="mainApp">
+        <div class="header-app">
+            <h3>Menu Restoran</h3>
+            <span id="displayMeja"></span>
+        </div>
+
+        <div class="menu-grid" id="menuContainer"></div>
+
+        <button class="btn-cart" onclick="toggleCart()">Keranjang (<span id="cartCount">0</span>)</button>
+
+        <div class="modal-overlay" id="cartModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 style="margin: 0;">Detail Pesanan</h3>
+                    <span class="close-btn" onclick="toggleCart()">&times;</span>
+                </div>
+                <ul class="cart-list" id="daftarKeranjang"></ul>
+                <div class="total-container">
+                    <span>Total:</span>
+                    <span id="totalHarga">Rp 0</span>
+                </div>
+                <button class="btn-checkout" onclick="tampilkanQR()">Pesan Sekarang</button>
+            </div>
+        </div>
+
+        <div class="modal-overlay" id="qrModal">
+            <div class="modal-content qr-container">
+                <div class="modal-header" style="width: 100%;">
+                    <h3 style="margin: 0; text-align: left;">Pembayaran QRIS</h3>
+                    <span class="close-btn" onclick="toggleQR()">&times;</span>
+                </div>
+                <span style="font-size: 14px; color: #aaa;">Total Tagihan Anda:</span>
+                <div class="qr-total" id="tagihanQR">Rp 0</div>
+                <img src="https://placehold.co/200x200/FFF/000?text=Scan+QRIS" alt="QRIS" class="qr-img">
+                <span style="font-size: 12px; color: #aaa; margin-bottom: 20px;">Silakan scan kode QR di atas menggunakan aplikasi e-wallet atau m-banking Anda.</span>
+                <button class="btn-checkout" onclick="konfirmasiPembayaran()">Konfirmasi Pembayaran</button>
+            </div>
+        </div>
+    </div>
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
         const socket = io();
-        function pesan(item) {
-            socket.emit('newOrder', item);
-            document.getElementById('notifikasi').innerText = "Pesanan '" + item + "' sedang diproses...";
+        
+        let namaPelanggan = "";
+        let nomorMeja = "";
+        let keranjang = {};
+
+        const daftarMenu = [
+            { nama: 'Nasi Goreng', img: '/Image/nasigoreng.jpg', harga: 20000 },
+            { nama: 'Mie Kocok Spesial', img: '/Image/mikocok.webp', harga: 25000 },
+            { nama: 'Samyang Buldak Ekstra', img: '/Image/samyang.webp', harga: 30000 },
+            { nama: 'Mie Instan Hype Abis', img: '/Image/indomie.jpg', harga: 15000 },
+            { nama: 'Rendang Sapi Pedas', img: '/Image/rendang.jpg', harga: 35000 },
+            { nama: 'Es Teh Manis', img: '/Image/esteh.jpg', harga: 5000 }
+        ];
+
+        function mulaiPesanan() {
+            const valNama = document.getElementById('inputNama').value.trim();
+            const valMeja = document.getElementById('inputMeja').value.trim();
+
+            if (valNama === "" || valMeja === "") {
+                alert("Harap isi Nama dan Nomor Meja terlebih dahulu!");
+                return;
+            }
+
+            namaPelanggan = valNama;
+            nomorMeja = valMeja;
+
+            document.getElementById('welcomeScreen').style.display = 'none';
+            document.getElementById('mainApp').style.display = 'block';
+            document.getElementById('displayMeja').innerText = `Meja ${nomorMeja} - ${namaPelanggan}`;
+
+            renderMenu();
         }
-        socket.on('orderReady', (id) => {
-            alert('Hore! Pesanan #' + id + ' sudah siap diambil!');
-            document.getElementById('notifikasi').innerText = 'Silakan ambil pesanan #' + id + ' di kasir.';
+
+        function formatRupiah(angka) {
+            return 'Rp ' + angka.toLocaleString('id-ID');
+        }
+
+        function getHargaItem(namaItem) {
+            const item = daftarMenu.find(m => m.nama === namaItem);
+            return item ? item.harga : 0;
+        }
+
+        function hitungTotal() {
+            let total = 0;
+            for (let nama in keranjang) {
+                total += keranjang[nama] * getHargaItem(nama);
+            }
+            return total;
+        }
+
+        function renderMenu() {
+            const container = document.getElementById('menuContainer');
+            container.innerHTML = '';
+            
+            daftarMenu.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                
+                const img = document.createElement('img');
+                img.src = item.img;
+                
+                const title = document.createElement('h3');
+                title.innerText = item.nama;
+
+                const price = document.createElement('div');
+                price.className = 'harga-text';
+                price.innerText = formatRupiah(item.harga);
+                
+                const qty = keranjang[item.nama] || 0;
+                
+                card.appendChild(img);
+                card.appendChild(title);
+                card.appendChild(price);
+                
+                if (qty === 0) {
+                    const btnTambah = document.createElement('button');
+                    btnTambah.className = 'btn-tambah';
+                    btnTambah.innerText = 'Tambah';
+                    btnTambah.onclick = () => updateKeranjang(item.nama, 1);
+                    card.appendChild(btnTambah);
+                } else {
+                    const controls = document.createElement('div');
+                    controls.className = 'controls';
+                    
+                    const btnMin = document.createElement('button');
+                    btnMin.className = 'btn-qty';
+                    btnMin.innerHTML = '&bull;';
+                    btnMin.onclick = () => updateKeranjang(item.nama, -1);
+                    
+                    const spanQty = document.createElement('span');
+                    spanQty.className = 'qty-text';
+                    spanQty.innerText = qty;
+                    
+                    const btnPlus = document.createElement('button');
+                    btnPlus.className = 'btn-qty';
+                    btnPlus.innerHTML = '+';
+                    btnPlus.onclick = () => updateKeranjang(item.nama, 1);
+                    
+                    controls.appendChild(btnMin);
+                    controls.appendChild(spanQty);
+                    controls.appendChild(btnPlus);
+                    card.appendChild(controls);
+                }
+                
+                container.appendChild(card);
+            });
+            
+            updateCartCount();
+            renderCartModal();
+        }
+
+        function updateKeranjang(nama, perubahan) {
+            if (!keranjang[nama]) keranjang[nama] = 0;
+            keranjang[nama] += perubahan;
+            if (keranjang[nama] <= 0) delete keranjang[nama];
+            renderMenu();
+        }
+
+        function updateCartCount() {
+            let totalQty = 0;
+            for (let nama in keranjang) totalQty += keranjang[nama];
+            document.getElementById('cartCount').innerText = totalQty;
+        }
+
+        function toggleCart() {
+            const modal = document.getElementById('cartModal');
+            modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        function toggleQR() {
+            const qrModal = document.getElementById('qrModal');
+            qrModal.style.display = qrModal.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        function renderCartModal() {
+            const list = document.getElementById('daftarKeranjang');
+            list.innerHTML = '';
+            
+            for (let nama in keranjang) {
+                const subtotal = keranjang[nama] * getHargaItem(nama);
+                const li = document.createElement('li');
+                li.innerHTML = `<span>${nama} <span style="color:#aaa; font-size:12px;">(x${keranjang[nama]})</span></span> <span>${formatRupiah(subtotal)}</span>`;
+                list.appendChild(li);
+            }
+
+            document.getElementById('totalHarga').innerText = formatRupiah(hitungTotal());
+        }
+
+        function tampilkanQR() {
+            const total = hitungTotal();
+            if (total === 0) {
+                alert('Keranjang kosong!');
+                return;
+            }
+            
+            document.getElementById('tagihanQR').innerText = formatRupiah(total);
+            toggleCart();
+            toggleQR();
+        }
+
+        function konfirmasiPembayaran() {
+            const itemsToOrder = [];
+            for (let nama in keranjang) {
+                itemsToOrder.push(keranjang[nama] + 'x ' + nama);
+            }
+            
+            const dataPesanan = {
+                items: itemsToOrder,
+                namaPelanggan: namaPelanggan,
+                nomorMeja: nomorMeja
+            };
+
+            socket.emit('newOrder', dataPesanan);
+            alert(`Terima kasih, ${namaPelanggan}! Pesanan untuk Meja ${nomorMeja} sedang diproses dapur.`);
+            
+            keranjang = {};
+            toggleQR();
+            renderMenu();
+        }
+
+        socket.on('orderReady', (order) => {
+            if (order.meja === nomorMeja && order.namaPelanggan === namaPelanggan) {
+                alert(`Halo ${order.namaPelanggan}! Makanan untuk Meja ${order.meja} sudah siap diambil di kasir.`);
+            }
         });
     </script>
 </body>

@@ -1,24 +1,115 @@
 <!DOCTYPE html>
-<html>
-<head><title>Chef - Antrean Pesanan</title></head>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chef - Antrean Pesanan</title>
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: #ffffff;
+            font-family: sans-serif;
+            padding: 30px;
+            margin: 0;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 28px;
+        }
+        #daftarPesanan {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        .card {
+            background-color: #424242;
+            border-radius: 15px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        .card-header {
+            border-bottom: 1px solid #555;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        .card h3 {
+            margin: 0 0 5px 0;
+            font-size: 20px;
+        }
+        .card-nama {
+            font-size: 14px;
+            color: #b0bec5;
+        }
+        .card ul {
+            list-style-type: disc;
+            padding-left: 20px;
+            margin: 0 0 25px 0;
+            flex-grow: 1;
+        }
+        .card li {
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        .btn-selesai {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+        }
+    </style>
+</head>
 <body>
     <h2>Antrean Dapur</h2>
-    <ul id="daftarPesanan"></ul>
+    <div id="daftarPesanan"></div>
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
         const socket = io();
+
         socket.on('updateQueue', (queue) => {
             const list = document.getElementById('daftarPesanan');
-            list.innerHTML = ''; // Bersihkan list
+            list.innerHTML = '';
+            
             queue.forEach(order => {
-                const li = document.createElement('li');
-                li.innerText = `Pesanan #${order.id}: ${order.item} `;
+                const card = document.createElement('div');
+                card.className = 'card';
+                
+                const header = document.createElement('div');
+                header.className = 'card-header';
+                
+                const title = document.createElement('h3');
+                title.innerText = `Pesanan Meja <${order.meja}>`;
+                
+                const nama = document.createElement('div');
+                nama.className = 'card-nama';
+                nama.innerText = `Atas Nama: ${order.namaPelanggan}`;
+                
+                header.appendChild(title);
+                header.appendChild(nama);
+                
+                const ul = document.createElement('ul');
+                order.items.forEach(item => {
+                    const li = document.createElement('li');
+                    li.innerText = item;
+                    ul.appendChild(li);
+                });
+                
                 const btn = document.createElement('button');
+                btn.className = 'btn-selesai';
                 btn.innerText = "Selesai (Dequeue)";
                 btn.onclick = () => socket.emit('finishOrder', order.id);
-                li.appendChild(btn);
-                list.appendChild(li);
+                
+                card.appendChild(header);
+                card.appendChild(ul);
+                card.appendChild(btn);
+                list.appendChild(card);
             });
         });
     </script>
