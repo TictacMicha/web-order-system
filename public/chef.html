@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head><title>Chef - Antrean Pesanan</title></head>
+<body>
+    <h2>Antrean Dapur</h2>
+    <ul id="daftarPesanan"></ul>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        socket.on('updateQueue', (queue) => {
+            const list = document.getElementById('daftarPesanan');
+            list.innerHTML = ''; // Bersihkan list
+            queue.forEach(order => {
+                const li = document.createElement('li');
+                li.innerText = `Pesanan #${order.id}: ${order.item} `;
+                const btn = document.createElement('button');
+                btn.innerText = "Selesai (Dequeue)";
+                btn.onclick = () => socket.emit('finishOrder', order.id);
+                li.appendChild(btn);
+                list.appendChild(li);
+            });
+        });
+    </script>
+</body>
+</html>

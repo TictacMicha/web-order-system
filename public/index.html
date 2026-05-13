@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head><title>Pelanggan - Pesan Makanan</title></head>
+<body>
+    <h2>Pesan Makanan</h2>
+    <button onclick="pesan('Nasi Goreng')">Pesan Nasi Goreng</button>
+    <button onclick="pesan('Mie Ayam')">Pesan Mie Ayam</button>
+    <div id="notifikasi" style="color: green; margin-top: 20px;"></div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        function pesan(item) {
+            socket.emit('newOrder', item);
+            document.getElementById('notifikasi').innerText = "Pesanan '" + item + "' sedang diproses...";
+        }
+        socket.on('orderReady', (id) => {
+            alert('Hore! Pesanan #' + id + ' sudah siap diambil!');
+            document.getElementById('notifikasi').innerText = 'Silakan ambil pesanan #' + id + ' di kasir.';
+        });
+    </script>
+</body>
+</html>
