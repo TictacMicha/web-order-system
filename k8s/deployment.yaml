@@ -3,7 +3,12 @@ kind: Deployment
 metadata:
   name: web-order-deployment
 spec:
-  replicas: 2 # Orchestration: Menjalankan 2 instance server secara otomatis untuk load balancing
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1         # Boleh nambah 1 pod baru saat update
+      maxUnavailable: 0   # JANGAN matikan pod lama sebelum pod baru menyala
   selector:
     matchLabels:
       app: web-order
@@ -14,18 +19,14 @@ spec:
     spec:
       containers:
       - name: web-order-container
-        image: username_docker_kamu/web-order:latest # Nanti diisi otomatis oleh CI/CD
+        image: mirzakhairano/web-order:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 3000
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: web-order-service
-spec:
-  type: LoadBalancer # Mengizinkan akses dari internet (Cloud)
-  ports:
-  - port: 80
-    targetPort: 3000
-  selector:
-    app: web-order
+        # Satpam K8s untuk ngecek aplikasinya udah benar-benar nyala atau belum
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 5
