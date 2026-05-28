@@ -4,6 +4,7 @@ metadata:
   name: web-order-service
 spec:
   type: NodePort
+  sessionAffinity: ClientIP
   selector:
     app: web-order
   ports:
