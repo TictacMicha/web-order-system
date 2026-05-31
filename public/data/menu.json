@@ -1,0 +1,42 @@
+[
+  {
+    "id": "burger-deluxe",
+    "name": "Double Patty Smokehouse",
+    "price": 125000,
+    "rating": 4.8,
+    "eta": "15-20 min",
+    "image": "/Image/menu-burger.png",
+    "desc": "Dua patty daging sapi dengan cheddar leleh, beef bacon, caramelized onion, dan house sauce.",
+    "category": "burger"
+  },
+  {
+    "id": "woodfired-pepperoni",
+    "name": "Woodfired Pepperoni Pizza",
+    "price": 180000,
+    "rating": 4.9,
+    "eta": "25-30 min",
+    "image": "/Image/menu-pizza.png",
+    "desc": "Pizza oven klasik dengan pepperoni premium, mozzarella lembut, olive hitam, dan basil segar.",
+    "category": "pizza"
+  },
+  {
+    "id": "luxury-sushi-boat",
+    "name": "Luxury Sushi Boat Set",
+    "price": 220000,
+    "rating": 4.7,
+    "eta": "20-25 min",
+    "image": "/Image/menu-sushi.png",
+    "desc": "Kombinasi nigiri, sashimi, dan rolls dalam sajian boat mewah dengan ikan segar pilihan harian.",
+    "category": "sushi"
+  },
+  {
+    "id": "summer-cocktail-flight",
+    "name": "Summer Mocktail Flight",
+    "price": 30000,
+    "rating": 4.9,
+    "eta": "5-10 min",
+    "image": "/Image/menu-drinks.png",
+    "desc": "Tiga minuman segar fruity: mint citrus cooler, berry punch, dan blue lagoon di satu tray.",
+    "category": "drinks"
+  }
+]

@@ -1,0 +1,12 @@
+services:
+  quickbite-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: quickbite-app
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-3001}:3001"
+    environment:
+      - NODE_ENV=production
+      - PORT=3001

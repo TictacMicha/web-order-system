@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QuickBite - Detail Menu</title>
+  <script src="/js/tailwind-theme.js"></script>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link rel="stylesheet" href="/styles/theme.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  <script id="tailwind-config">tailwind.config = window.quickbiteTailwindConfig;</script>
+  <style>
+    .material-symbols-outlined {
+      font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+    }
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
+    .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    body { min-height: max(884px, 100dvh); }
+  </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen pb-32">
+  <header class="sticky top-0 z-40 bg-surface shadow-sm w-full max-w-[430px] mx-auto">
+    <div class="flex items-center justify-between px-md py-base w-full">
+      <div class="flex items-center gap-base">
+        <a href="/" class="flex items-center justify-center p-xs hover:bg-surface-variant/50 transition-colors rounded-full active:scale-95">
+          <span class="material-symbols-outlined text-primary">arrow_back</span>
+        </a>
+        <h1 class="font-display-lg text-headline-md font-bold text-primary">Detail Menu</h1>
+      </div>
+      <div class="flex items-center gap-sm">
+        <a href="/cart.html" class="flex items-center justify-center p-xs hover:bg-surface-variant/50 transition-colors rounded-full active:scale-95">
+          <span class="material-symbols-outlined text-primary">shopping_cart</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <header class="relative w-full max-w-[430px] mx-auto h-[397px] overflow-hidden">
+    <img id="menuHeroImage" class="w-full h-full object-cover" src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=1400&auto=format&fit=crop" alt="Cheeseburger Deluxe" />
+  </header>
+
+  <main class="w-full max-w-[430px] mx-auto px-container-margin-mobile -mt-xl relative z-10">
+    <section class="bg-surface-bright rounded-t-[32px] p-xl shadow-xl">
+      <div class="flex justify-between items-start mb-base">
+        <div class="space-y-xs">
+          <h1 id="menuName" class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface">Cheeseburger Deluxe</h1>
+          <div class="flex items-center gap-sm">
+            <div class="flex items-center gap-xs text-primary">
+              <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">star</span>
+              <span id="menuRating" class="font-label-md text-label-md">4.8 (1.2k+ Rating)</span>
+            </div>
+            <span class="text-outline-variant">•</span>
+            <div class="flex items-center gap-xs text-on-surface-variant">
+              <span class="material-symbols-outlined">schedule</span>
+              <span id="menuEta" class="font-label-md text-label-md">15-20 min</span>
+            </div>
+          </div>
+        </div>
+        <div class="text-right">
+          <p id="menuPrice" class="font-headline-md text-headline-md text-primary">-</p>
+        </div>
+      </div>
+
+      <div class="mt-lg">
+        <h2 class="font-label-md text-label-md text-on-surface-variant mb-base">Tentang Menu</h2>
+        <p id="menuDesc" class="font-body-md text-body-md text-on-surface leading-relaxed">
+          Nikmati sensasi burger premium dengan dua lapis daging sapi Australia pilihan, keju cheddar yang meleleh sempurna,
+          potongan selada segar, tomat, dan saus rahasia QuickBite di dalam roti brioche yang lembut.
+        </p>
+      </div>
+
+      <div class="mt-xl space-y-lg">
+        <div>
+          <div class="flex justify-between items-center mb-md">
+            <h3 class="font-headline-md text-headline-md text-on-surface">Pilihan Tambahan</h3>
+            <span class="bg-secondary-container text-on-secondary-container px-sm py-xs rounded-lg font-label-sm text-label-sm">Opsional</span>
+          </div>
+          <div class="space-y-sm">
+            <label class="flex items-center justify-between p-md bg-surface-container-low rounded-xl border border-outline-variant/30 active:bg-surface-container transition-colors cursor-pointer group">
+              <div class="flex items-center gap-md">
+                <div class="w-6 h-6 rounded border-2 border-outline group-has-[:checked]:bg-primary group-has-[:checked]:border-primary flex items-center justify-center transition-all">
+                  <input class="hidden addon" type="checkbox" data-label="Extra Cheese" data-price="5000" checked />
+                  <span class="material-symbols-outlined text-white text-[18px] opacity-0 group-has-[:checked]:opacity-100 transition-opacity">check</span>
+                </div>
+                <div><p class="font-body-md text-body-md text-on-surface">Extra Cheese</p><p id="extraCheesePriceLabel" class="font-label-sm text-label-sm text-on-surface-variant">-</p></div>
+              </div>
+              <span class="material-symbols-outlined text-primary">add_circle</span>
+            </label>
+
+            <label class="flex items-center justify-between p-md bg-surface-container-low rounded-xl border border-outline-variant/30 active:bg-surface-container transition-colors cursor-pointer group">
+              <div class="flex items-center gap-md">
+                <div class="w-6 h-6 rounded border-2 border-outline group-has-[:checked]:bg-primary group-has-[:checked]:border-primary flex items-center justify-center transition-all">
+                  <input class="hidden addon" type="checkbox" data-label="Extra Patty" data-price="15000" />
+                  <span class="material-symbols-outlined text-white text-[18px] opacity-0 group-has-[:checked]:opacity-100 transition-opacity">check</span>
+                </div>
+                <div><p class="font-body-md text-body-md text-on-surface">Extra Patty</p><p id="extraPattyPriceLabel" class="font-label-sm text-label-sm text-on-surface-variant">-</p></div>
+              </div>
+              <span class="material-symbols-outlined text-on-surface-variant">add_circle</span>
+            </label>
+
+            <label class="flex items-center justify-between p-md bg-surface-container-low rounded-xl border border-outline-variant/30 active:bg-surface-container transition-colors cursor-pointer group">
+              <div class="flex items-center gap-md">
+                <div class="w-6 h-6 rounded border-2 border-outline group-has-[:checked]:bg-primary group-has-[:checked]:border-primary flex items-center justify-center transition-all">
+                  <input class="hidden addon" type="checkbox" data-label="No Onions" data-price="0" />
+                  <span class="material-symbols-outlined text-white text-[18px] opacity-0 group-has-[:checked]:opacity-100 transition-opacity">check</span>
+                </div>
+                <div><p class="font-body-md text-body-md text-on-surface">No Onions</p><p class="font-label-sm text-label-sm text-on-surface-variant">Tanpa biaya</p></div>
+              </div>
+              <span class="material-symbols-outlined text-on-surface-variant">do_not_disturb_on</span>
+            </label>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="font-headline-md text-headline-md text-on-surface mb-md">Instruksi Khusus</h3>
+          <textarea id="specialNote" class="w-full bg-surface-container-lowest border border-outline-variant rounded-xl p-md focus:ring-2 focus:ring-primary focus:border-transparent outline-none min-h-[100px] font-body-md text-body-md text-on-surface qb-focus-ring" placeholder="Contoh: Kurangi saus, tolong pisahkan sambal..."></textarea>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-50 bg-surface border-t border-outline-variant/20 shadow-[0_-10px_30px_rgba(0,0,0,0.05)] p-container-margin-mobile">
+    <div class="w-full mx-auto flex items-center gap-lg">
+      <div class="flex items-center bg-surface-container rounded-full p-xs">
+        <button id="decrementQty" class="w-10 h-10 flex items-center justify-center rounded-full bg-surface-bright text-primary active:scale-90 transition-transform shadow-sm qb-focus-ring">
+          <span class="material-symbols-outlined">remove</span>
+        </button>
+        <span id="quantityValue" class="px-md font-headline-md text-headline-md text-on-surface">1</span>
+        <button id="incrementQty" class="w-10 h-10 flex items-center justify-center rounded-full bg-primary text-white active:scale-90 transition-transform shadow-sm qb-focus-ring">
+          <span class="material-symbols-outlined">add</span>
+        </button>
+      </div>
+      <button id="addToCartButton" class="flex-1 bg-primary hover:opacity-90 transition-opacity text-white py-md px-xl rounded-full font-headline-md text-headline-md flex items-center justify-center gap-md active:scale-[0.98] qb-focus-ring">
+        <span>Tambah ke Keranjang</span>
+        <span class="w-px h-6 bg-white/20"></span>
+        <span id="totalPrice">-</span>
+      </button>
+    </div>
+  </footer>
+
+  <script src="/js/toast.js"></script>
+  <script>
+    const EXTRA_CHEESE_PRICE = 5000;
+    const EXTRA_PATTY_PRICE = 15000;
+    let BASE_PRICE = 45000;
+    let menuId = "burger-deluxe";
+    let menuName = "Cheeseburger Deluxe";
+    let menuImage = "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=400&auto=format&fit=crop";
+    let quantity = 1;
+
+    const quantityEl = document.getElementById("quantityValue");
+    const totalPriceEl = document.getElementById("totalPrice");
+    const addons = Array.from(document.querySelectorAll(".addon"));
+
+    function toRupiah(value) {
+      return `Rp ${value.toLocaleString("id-ID")}`;
+    }
+
+    function addonTotal() {
+      return addons.reduce((sum, addon) => sum + (addon.checked ? Number(addon.dataset.price) : 0), 0);
+    }
+
+    function calculateTotal() {
+      return (BASE_PRICE + addonTotal()) * quantity;
+    }
+
+    function syncPrice() {
+      quantityEl.textContent = String(quantity);
+      totalPriceEl.textContent = toRupiah(calculateTotal());
+    }
+
+    function syncAddonPriceLabels() {
+      document.getElementById("extraCheesePriceLabel").textContent = `+ ${toRupiah(EXTRA_CHEESE_PRICE)}`;
+      document.getElementById("extraPattyPriceLabel").textContent = `+ ${toRupiah(EXTRA_PATTY_PRICE)}`;
+    }
+
+    document.getElementById("incrementQty").addEventListener("click", () => {
+      quantity += 1;
+      syncPrice();
+    });
+
+    document.getElementById("decrementQty").addEventListener("click", () => {
+      quantity = Math.max(1, quantity - 1);
+      syncPrice();
+    });
+
+    addons.forEach((addon) => addon.addEventListener("change", syncPrice));
+
+    document.getElementById("addToCartButton").addEventListener("click", () => {
+      const note = document.getElementById("specialNote").value.trim();
+      const selectedAddons = addons.filter((addon) => addon.checked).map((addon) => addon.dataset.label);
+      const item = {
+        id: `${menuId}-${Date.now()}`,
+        menuId,
+        name: menuName,
+        unitPrice: BASE_PRICE + addonTotal(),
+        quantity,
+        addons: selectedAddons,
+        note,
+        image: menuImage
+      };
+
+      const cart = JSON.parse(localStorage.getItem("qb:cart") || "[]");
+      cart.push(item);
+      localStorage.setItem("qb:cart", JSON.stringify(cart));
+      localStorage.setItem("qb:lastOrder", JSON.stringify({ ...item, total: calculateTotal() }));
+      window.qbToast.navigateWithToast("Berhasil ditambahkan ke keranjang", "/cart.html", "success", 900);
+    });
+
+    syncAddonPriceLabels();
+    syncPrice();
+
+    async function bootstrapMenuDetail() {
+      const id = new URLSearchParams(window.location.search).get("id");
+      if (!id) return;
+
+      try {
+        const response = await fetch(`/api/menu/${id}`);
+        if (!response.ok) return;
+        const result = await response.json();
+        const menu = result?.data;
+        if (!menu) return;
+
+        menuId = menu.id;
+        menuName = menu.name;
+        menuImage = menu.image;
+        BASE_PRICE = Number(menu.price || 0);
+
+        document.getElementById("menuHeroImage").src = menu.image;
+        document.getElementById("menuHeroImage").alt = menu.name;
+        document.getElementById("menuName").textContent = menu.name;
+        document.getElementById("menuRating").textContent = `${menu.rating} (1.2k+ Rating)`;
+        document.getElementById("menuEta").textContent = menu.eta;
+        document.getElementById("menuPrice").textContent = toRupiah(BASE_PRICE);
+        document.getElementById("menuDesc").textContent = menu.desc;
+        syncPrice();
+      } catch (_error) {
+        // keep default static content
+      }
+    }
+
+    bootstrapMenuDetail();
+  </script>
+</body>
+</html>

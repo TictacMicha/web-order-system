@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <script src="/js/tailwind-theme.js"></script>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link rel="stylesheet" href="/styles/theme.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  <script id="tailwind-config">tailwind.config = window.quickbiteTailwindConfig;</script>
+  <style>
+    .material-symbols-outlined { font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24; }
+    .scale-98:active { transform: scale(0.98); }
+    body { min-height: max(884px, 100dvh); }
+  </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen">
+  <header class="sticky top-0 bg-surface shadow-md z-40 w-full max-w-[430px] mx-auto">
+    <div class="flex items-center justify-between px-md py-base w-full">
+      <div class="flex items-center">
+        <h1 class="font-display-lg text-headline-md font-bold text-primary">Status Pesanan</h1>
+      </div>
+      <div class="flex items-center gap-sm">
+        <a href="/cart.html" class="flex items-center justify-center p-xs hover:bg-surface-variant/50 transition-colors rounded-full active:scale-95">
+          <span class="material-symbols-outlined text-primary">shopping_cart</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="w-full max-w-[430px] mx-auto px-md pb-xl pt-md">
+    <section class="flex flex-col items-center text-center mb-lg pt-base">
+      <p class="font-label-md text-label-md text-on-surface-variant mb-sm">ID: <span id="orderIdLabel">#QB-00000</span></p>
+      <div class="w-20 h-20 bg-primary rounded-full flex items-center justify-center mb-md shadow-lg">
+        <span class="material-symbols-outlined text-white text-5xl" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+      </div>
+      <h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-xs">Pesanan Berhasil!</h2>
+      <p id="statusDescription" class="text-on-surface-variant text-body-md">Chef kami sedang meracik bumbu rahasia untuk hidanganmu.</p>
+      <div class="w-full max-w-xs bg-surface-container mt-md rounded-full h-1.5 overflow-hidden">
+        <div id="statusProgress" class="bg-primary h-full w-1/4 animate-[pulse_2s_infinite]"></div>
+      </div>
+      <p id="statusBadge" class="text-label-sm text-primary mt-2 uppercase tracking-wider font-bold">Pesanan Diterima</p>
+    </section>
+
+    <div class="grid grid-cols-1 gap-lg">
+      <div class="flex flex-col gap-lg">
+        <div class="bg-surface-container-lowest rounded-xl p-md shadow-sm border border-surface-variant">
+          <div class="flex items-center justify-between mb-md">
+            <h3 class="font-headline-md text-headline-md text-on-surface flex items-center gap-xs">
+              <span class="material-symbols-outlined text-primary">restaurant</span>Status Persiapan
+            </h3>
+            <span id="stageLabel" class="px-sm py-1 bg-primary-fixed text-on-primary-fixed-variant rounded-full font-label-sm">Tahap 1 dari 4</span>
+          </div>
+          <div id="stageList" class="space-y-sm text-body-sm text-on-surface-variant"></div>
+        </div>
+
+        <div class="bg-surface-container-lowest rounded-xl shadow-lg overflow-hidden border border-surface-variant">
+          <div class="p-md flex items-center justify-between bg-primary text-white">
+            <div>
+              <p class="font-label-sm text-label-sm opacity-90">Estimasi Kedatangan</p>
+              <p id="etaLabel" class="font-headline-lg-mobile text-headline-lg-mobile">25 - 30 Menit</p>
+            </div>
+            <span class="material-symbols-outlined text-4xl">schedule</span>
+          </div>
+          <div class="relative h-64 w-full bg-surface-dim">
+            <iframe
+              id="deliveryMap"
+              class="w-full h-full border-0"
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              src="about:blank"
+              title="Peta Lokasi Pengiriman"
+            ></iframe>
+          </div>
+        </div>
+
+        <div class="bg-surface-container-lowest rounded-xl p-md shadow-sm border border-surface-variant">
+          <h3 class="font-headline-md text-headline-md text-on-surface mb-md flex items-center gap-xs">
+            <span class="material-symbols-outlined text-primary">location_on</span>
+            Alamat Pengiriman
+          </h3>
+          <div class="flex flex-col gap-xs">
+            <p id="recipientNameText" class="font-label-md text-label-md text-on-surface">-</p>
+            <p id="addressText" class="text-body-sm text-on-surface-variant">-</p>
+            <div id="deliveryNoteText" class="mt-sm p-sm bg-surface-container-low rounded-lg text-body-sm italic text-on-surface-variant">
+              "-"
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="bg-surface-container-lowest rounded-xl p-md shadow-sm border border-surface-variant h-full">
+          <h3 class="font-headline-md text-headline-md text-on-surface mb-md">Rincian Pesanan</h3>
+          <div id="orderItems" class="space-y-md mb-lg"></div>
+          <div class="space-y-xs mb-lg">
+            <div class="flex justify-between text-body-sm text-on-surface-variant"><span>Subtotal</span><span id="subtotalText">-</span></div>
+            <div class="flex justify-between text-body-sm text-on-surface-variant"><span>Biaya Pengiriman</span><span id="deliveryText">-</span></div>
+            <div class="flex justify-between text-body-sm text-on-surface-variant"><span>Biaya Layanan</span><span id="serviceText">-</span></div>
+            <div class="flex justify-between font-headline-md text-headline-md text-on-surface pt-sm border-t border-surface-variant mt-sm">
+              <span>Total Pembayaran</span><span id="totalText" class="text-primary">-</span>
+            </div>
+            <div class="flex items-center gap-xs mt-md text-on-surface-variant">
+              <span class="material-symbols-outlined text-[20px]">account_balance_wallet</span>
+              <span id="paymentText" class="text-label-sm">Metode: -</span>
+            </div>
+          </div>
+          <div class="space-y-sm">
+            <a href="/" class="w-full py-md bg-primary text-white font-headline-md rounded-full shadow-lg hover:brightness-110 transition-all scale-98 active:scale-95 inline-flex items-center justify-center">Kembali ke Beranda</a>
+            <a href="tel:+6281234567890" class="w-full py-md border-2 border-primary text-primary font-headline-md rounded-full hover:bg-primary-fixed transition-all active:scale-95 inline-flex items-center justify-center">Butuh Bantuan?</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <div class="h-xl"></div>
+
+  <script src="/js/order-id.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = window.io ? window.io() : null;
+    const DELIVERY_FEE = 12000;
+    const SERVICE_FEE = 2000;
+    const checkout = JSON.parse(localStorage.getItem("qb:lastCheckout") || "{}");
+    const cartCache = JSON.parse(localStorage.getItem("qb:cart") || "[]");
+    const cart = Array.isArray(checkout.cartItems) && checkout.cartItems.length > 0 ? checkout.cartItems : cartCache;
+
+    const statusSteps = ["received", "preparing", "ready_for_delivery", "completed"];
+    const statusTextMap = {
+      received: "Pesanan Diterima",
+      preparing: "Sedang Dimasak",
+      ready_for_delivery: "Siap Diantar",
+      completed: "Selesai"
+    };
+    const statusDescMap = {
+      received: "Pesanan telah dikonfirmasi restoran.",
+      preparing: "Chef kami sedang meracik bumbu rahasia untuk hidanganmu.",
+      ready_for_delivery: "Pesanan sudah siap dan menunggu kurir.",
+      completed: "Pesanan selesai. Selamat menikmati!"
+    };
+
+    const el = {
+      orderItems: document.getElementById("orderItems"),
+      subtotalText: document.getElementById("subtotalText"),
+      totalText: document.getElementById("totalText"),
+      deliveryText: document.getElementById("deliveryText"),
+      serviceText: document.getElementById("serviceText"),
+      paymentText: document.getElementById("paymentText"),
+      orderIdLabel: document.getElementById("orderIdLabel"),
+      recipientNameText: document.getElementById("recipientNameText"),
+      addressText: document.getElementById("addressText"),
+      deliveryNoteText: document.getElementById("deliveryNoteText"),
+      stageLabel: document.getElementById("stageLabel"),
+      statusBadge: document.getElementById("statusBadge"),
+      statusDescription: document.getElementById("statusDescription"),
+      statusProgress: document.getElementById("statusProgress"),
+      stageList: document.getElementById("stageList")
+    };
+
+    function isSameOrder(payload) {
+      if (!payload) return false;
+      const currentId = String(checkout.orderId || "").trim();
+      const currentCode = String(checkout.orderCode || "").trim();
+      const payloadId = String(payload.orderId || "").trim();
+      const payloadCode = String(payload.orderCode || "").trim();
+
+      return (currentId && payloadId && currentId === payloadId) ||
+        (currentCode && payloadCode && currentCode === payloadCode);
+    }
+
+    function toRupiah(value) {
+      return `Rp ${value.toLocaleString("id-ID")}`;
+    }
+
+    function createOrderItemRow(item) {
+      const row = document.createElement("div");
+      row.className = "flex justify-between items-center py-base border-b border-surface-variant";
+      row.innerHTML = `
+        <div class="flex items-center gap-md">
+          <span class="font-label-md text-primary bg-primary-fixed w-8 h-8 flex items-center justify-center rounded-lg">${item.quantity}x</span>
+          <div>
+            <p class="font-label-md text-on-surface">${item.name}</p>
+            <p class="text-body-sm text-on-surface-variant">${(item.addons || []).join(", ") || "Regular"}</p>
+          </div>
+        </div>
+        <p class="font-label-md text-on-surface">${toRupiah(item.unitPrice * item.quantity)}</p>
+      `;
+      return row;
+    }
+
+    function renderOrderSummary() {
+      el.orderItems.innerHTML = "";
+      let subtotal = 0;
+      for (const item of cart) {
+        subtotal += item.unitPrice * item.quantity;
+        el.orderItems.appendChild(createOrderItemRow(item));
+      }
+
+      const total = subtotal + DELIVERY_FEE + SERVICE_FEE;
+      el.subtotalText.textContent = toRupiah(subtotal);
+      el.deliveryText.textContent = toRupiah(DELIVERY_FEE);
+      el.serviceText.textContent = toRupiah(SERVICE_FEE);
+      el.totalText.textContent = toRupiah(total);
+      el.paymentText.textContent = `Metode: ${checkout.payment || "OVO"}`;
+      const displayOrderId = checkout.orderCode || window.qbOrderId.toDisplayOrderId(checkout.orderId || 0);
+      el.orderIdLabel.textContent = `#${displayOrderId}`;
+      el.recipientNameText.textContent = checkout.recipientName || "Penerima belum diisi";
+      const deliveryAddress = checkout.address || localStorage.getItem("qb:userLocation") || "Alamat belum diisi";
+      el.addressText.textContent = deliveryAddress;
+      el.deliveryNoteText.textContent = checkout.note || '"Tidak ada catatan tambahan."';
+
+      const mapQuery = encodeURIComponent(deliveryAddress);
+      const mapUrl = `https://www.google.com/maps?q=${mapQuery}&output=embed`;
+      const mapFrame = document.getElementById("deliveryMap");
+      if (mapFrame) {
+        mapFrame.src = mapUrl;
+      }
+    }
+
+    function renderStatus(status) {
+      const idx = Math.max(0, statusSteps.indexOf(status));
+      el.stageLabel.textContent = `Tahap ${idx + 1} dari 4`;
+      el.statusBadge.textContent = statusTextMap[status] || statusTextMap.received;
+      el.statusDescription.textContent = statusDescMap[status] || statusDescMap.received;
+      el.statusProgress.style.width = `${((idx + 1) / 4) * 100}%`;
+
+      el.stageList.innerHTML = statusSteps.map((step, stepIndex) => {
+        const active = stepIndex <= idx ? "text-primary font-semibold" : "opacity-50";
+        return `<div class="${active}">${stepIndex + 1}. ${statusTextMap[step]}</div>`;
+      }).join("");
+    }
+
+    if (socket) {
+      socket.on("orderStatusUpdated", (payload) => {
+        if (isSameOrder(payload)) {
+          renderStatus(payload.status);
+        }
+      });
+    }
+
+    window.addEventListener("storage", (event) => {
+      if (event.key !== "qb:lastStatusUpdate") return;
+      try {
+        const payload = JSON.parse(event.newValue || "{}");
+        if (isSameOrder(payload)) {
+          renderStatus(payload.status);
+        }
+      } catch (_error) {
+        // ignore invalid payload
+      }
+    });
+
+    renderOrderSummary();
+    renderStatus("received");
+  </script>
+</body>
+</html>

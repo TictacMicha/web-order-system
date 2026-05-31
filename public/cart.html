@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>QuickBite - Your Cart</title>
+  <script src="/js/tailwind-theme.js"></script>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link rel="stylesheet" href="/styles/theme.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  <script id="tailwind-config">tailwind.config = window.quickbiteTailwindConfig;</script>
+  <style>
+    .material-symbols-outlined {
+      font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+    }
+    .payment-option {
+      border: 1px solid #d8c2bf;
+      background-color: #ffffff;
+      color: #534342;
+    }
+    .payment-option .payment-icon {
+      color: #5d5e5e;
+    }
+    .payment-option .payment-label {
+      color: #201a19;
+    }
+    .payment-option.is-active {
+      border: 2px solid #c00012;
+      background-color: #ffdad6;
+      color: #c00012;
+    }
+    .payment-option.is-active .payment-icon {
+      color: #c00012;
+    }
+    body {
+      min-height: max(884px, 100dvh);
+      font-family: "Montserrat", sans-serif;
+    }
+  </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen pb-40">
+  <header class="sticky top-0 z-40 bg-surface shadow-sm w-full max-w-[430px] mx-auto">
+    <div class="flex items-center justify-between px-md py-base w-full">
+      <div class="flex items-center gap-base">
+        <a href="/" class="flex items-center justify-center p-xs hover:bg-surface-variant/50 transition-colors rounded-full active:scale-95">
+          <span class="material-symbols-outlined text-primary">arrow_back</span>
+        </a>
+        <h1 class="font-display-lg text-headline-md font-bold text-primary">Cart</h1>
+      </div>
+      <div></div>
+    </div>
+  </header>
+
+  <main class="w-full max-w-[430px] mx-auto px-container-margin-mobile py-lg space-y-lg">
+    <section class="space-y-md">
+      <h2 class="font-headline-md text-headline-md text-on-surface">Order Summary</h2>
+      <div id="cartItems" class="space-y-md"></div>
+      <div id="emptyState" class="hidden bg-surface-container-lowest rounded-lg p-lg border border-outline-variant text-center text-on-surface-variant">
+        Keranjang masih kosong. Yuk pilih menu dulu.
+      </div>
+    </section>
+
+    <section class="space-y-md">
+      <div class="flex justify-between items-center">
+        <h2 class="font-headline-md text-headline-md text-on-surface">Payment Method</h2>
+        <a href="/category.html?name=all" class="text-primary font-label-md">See All</a>
+      </div>
+      <div class="grid grid-cols-1 gap-md" id="paymentMethods">
+        <button data-payment="OVO" class="payment-option rounded-lg p-md flex flex-col items-center justify-center gap-xs cursor-pointer shadow-sm transition-all hover:bg-surface-container">
+          <span class="payment-icon material-symbols-outlined text-[32px]">account_balance_wallet</span>
+          <span class="payment-label font-label-md">OVO</span>
+        </button>
+        <button data-payment="GoPay" class="payment-option rounded-lg p-md flex flex-col items-center justify-center gap-xs cursor-pointer shadow-sm transition-all hover:bg-surface-container">
+          <span class="payment-icon material-symbols-outlined text-[32px]">payments</span>
+          <span class="payment-label font-label-md">GoPay</span>
+        </button>
+        <button data-payment="Credit Card" class="payment-option rounded-lg p-md flex flex-col items-center justify-center gap-xs cursor-pointer shadow-sm transition-all hover:bg-surface-container">
+          <span class="payment-icon material-symbols-outlined text-[32px]">credit_card</span>
+          <span class="payment-label font-label-md">Credit Card</span>
+        </button>
+      </div>
+    </section>
+
+    <section class="bg-surface-container-lowest rounded-lg p-lg space-y-md border border-outline-variant">
+      <h2 class="font-headline-md text-headline-md text-on-surface">Delivery Address</h2>
+      <div class="space-y-sm">
+        <label for="recipientName" class="text-body-sm text-on-surface-variant">Nama Penerima</label>
+        <input id="recipientName" type="text" class="w-full rounded-lg border border-outline-variant bg-surface px-md py-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none" placeholder="Contoh: Budi Darmawan" />
+      </div>
+      <div class="space-y-sm">
+        <label for="deliveryAddress" class="text-body-sm text-on-surface-variant">Alamat Pengiriman</label>
+        <textarea id="deliveryAddress" class="w-full min-h-[96px] rounded-lg border border-outline-variant bg-surface px-md py-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none" placeholder="Contoh: Menara Digital, Lantai 12, Jl. Sudirman No. 45"></textarea>
+      </div>
+      <div class="space-y-sm">
+        <label for="deliveryNote" class="text-body-sm text-on-surface-variant">Catatan Kurir (Opsional)</label>
+        <input id="deliveryNote" type="text" class="w-full rounded-lg border border-outline-variant bg-surface px-md py-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none" placeholder='Contoh: "Titip di resepsionis"' />
+      </div>
+      <p id="addressError" class="hidden text-error text-body-sm">Lengkapi nama penerima dan alamat pengiriman dulu ya.</p>
+    </section>
+
+    <section class="bg-surface-container-low rounded-lg p-lg space-y-sm">
+      <h2 class="font-headline-md text-headline-md text-on-surface mb-md">Bill Details</h2>
+      <div class="flex justify-between text-body-md text-on-surface-variant"><span id="subtotalLabel">Subtotal (0 items)</span><span id="subtotalValue">-</span></div>
+      <div class="flex justify-between text-body-md text-on-surface-variant"><span>Delivery Fee</span><span id="deliveryFeeValue">-</span></div>
+      <div class="flex justify-between text-body-md text-on-surface-variant"><span>Service Fee</span><span id="serviceFeeValue">-</span></div>
+      <hr class="border-outline-variant my-md" />
+      <div class="flex justify-between text-headline-md text-on-surface font-bold"><span>Total Payment</span><span class="text-primary" id="totalPaymentValue">-</span></div>
+    </section>
+  </main>
+
+  <div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] bg-surface shadow-[0_-4px_20px_rgba(0,0,0,0.08)] px-container-margin-mobile py-md z-50">
+    <div class="w-full mx-auto flex flex-col gap-md">
+      <a href="/category.html?name=all" class="flex items-center justify-between bg-primary-fixed rounded-lg px-md py-base border border-outline-variant/30">
+        <span class="flex items-center gap-base">
+          <span class="material-symbols-outlined text-primary">sell</span>
+          <span class="font-label-md text-on-primary-fixed-variant">Have a promo code?</span>
+        </span>
+        <span class="material-symbols-outlined text-primary">chevron_right</span>
+      </a>
+      <button id="checkoutButton" class="w-full bg-primary text-on-primary font-headline-md py-md rounded-lg shadow-lg active:scale-[0.98] transition-transform flex items-center justify-center gap-base">
+        Lanjutkan ke Pembayaran
+        <span class="material-symbols-outlined">arrow_forward</span>
+      </button>
+    </div>
+  </div>
+
+  <div id="paymentOverlay" class="hidden fixed inset-0 z-[70] bg-black/45">
+    <div class="w-full max-w-[430px] mx-auto min-h-screen flex items-end">
+      <div class="w-full bg-surface rounded-t-2xl p-lg space-y-md">
+        <div class="flex items-center justify-between">
+          <h3 class="font-headline-md text-headline-md text-on-surface">Cara Pembayaran</h3>
+          <span id="paymentMethodBadge" class="px-sm py-xs rounded-full bg-primary-fixed text-primary text-label-sm font-label-sm">-</span>
+        </div>
+        <p id="paymentInstructionText" class="text-body-sm text-on-surface-variant leading-relaxed">-</p>
+        <div class="bg-surface-container-low rounded-lg p-md space-y-xs">
+          <div class="flex justify-between text-body-sm text-on-surface-variant"><span>Total Dibayar</span><span id="overlayTotalText">-</span></div>
+          <div class="flex justify-between text-body-sm text-on-surface-variant"><span>Atas Nama</span><span id="overlayRecipientText">-</span></div>
+          <div class="flex justify-between text-body-sm text-on-surface-variant"><span>Tujuan</span><span id="overlayAddressText" class="text-right max-w-[65%]">-</span></div>
+        </div>
+        <button id="paymentDoneButton" class="w-full bg-primary text-on-primary font-headline-md py-md rounded-lg shadow-lg active:scale-[0.98] transition-transform flex items-center justify-center gap-base">
+          Done
+          <span class="material-symbols-outlined">arrow_forward</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/order-id.js"></script>
+  <script src="/js/toast.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const DELIVERY_FEE = 12000;
+    const SERVICE_FEE = 2000;
+    const socket = window.io ? window.io() : null;
+    const paymentInstructions = {
+      OVO: "Buka aplikasi OVO, pilih Transfer/QRIS, lalu selesaikan pembayaran sesuai nominal total. Setelah berhasil, tekan Done.",
+      GoPay: "Buka aplikasi GoPay, lakukan pembayaran ke merchant QuickBite sesuai total transaksi, lalu tekan Done.",
+      "Credit Card": "Siapkan kartu kredit/debit, lanjutkan otorisasi 3DS di halaman gateway bank, lalu tekan Done setelah sukses."
+    };
+    let selectedPayment = localStorage.getItem("qb:selectedPayment") || "OVO";
+    let cart = JSON.parse(localStorage.getItem("qb:cart") || "[]");
+    cart = (Array.isArray(cart) ? cart : [])
+      .map((item) => {
+        if (!item || typeof item !== "object") return null;
+        const normalizedPrice = Number(item.unitPrice ?? item.price ?? 0);
+        const normalizedQty = Number(item.quantity ?? item.qty ?? 1);
+        return {
+          id: item.id || `${item.menuId || item.name || "item"}-${Date.now()}`,
+          menuId: item.menuId || item.id || "",
+          name: item.name || "Menu",
+          unitPrice: Number.isFinite(normalizedPrice) ? normalizedPrice : 0,
+          quantity: Number.isFinite(normalizedQty) && normalizedQty > 0 ? normalizedQty : 1,
+          addons: Array.isArray(item.addons) ? item.addons : [],
+          note: typeof item.note === "string" ? item.note : "",
+          image: item.image || "/Image/menu-burger.png"
+        };
+      })
+      .filter((item) => item && typeof item.name === "string" && Number(item.unitPrice) >= 0 && Number(item.quantity) > 0);
+    localStorage.setItem("qb:cart", JSON.stringify(cart));
+    const savedDeliveryInfo = JSON.parse(localStorage.getItem("qb:deliveryInfo") || "{}");
+
+    function toRupiah(value) {
+      return `Rp ${value.toLocaleString("id-ID")}`;
+    }
+
+    function saveCart() {
+      localStorage.setItem("qb:cart", JSON.stringify(cart));
+    }
+
+    function getDeliveryInfo() {
+      return {
+        recipientName: document.getElementById("recipientName").value.trim(),
+        address: document.getElementById("deliveryAddress").value.trim(),
+        note: document.getElementById("deliveryNote").value.trim()
+      };
+    }
+
+    function saveDeliveryInfo() {
+      localStorage.setItem("qb:deliveryInfo", JSON.stringify(getDeliveryInfo()));
+    }
+
+    function setAddressError(isVisible) {
+      document.getElementById("addressError").classList.toggle("hidden", !isVisible);
+    }
+
+    function openPaymentOverlay({ payment, total, recipientName, address }) {
+      document.getElementById("paymentMethodBadge").textContent = payment;
+      document.getElementById("paymentInstructionText").textContent = paymentInstructions[payment] || paymentInstructions.OVO;
+      document.getElementById("overlayTotalText").textContent = toRupiah(total);
+      document.getElementById("overlayRecipientText").textContent = recipientName;
+      document.getElementById("overlayAddressText").textContent = address;
+      document.getElementById("paymentOverlay").classList.remove("hidden");
+      document.body.classList.add("overflow-hidden");
+    }
+
+    function closePaymentOverlay() {
+      document.getElementById("paymentOverlay").classList.add("hidden");
+      document.body.classList.remove("overflow-hidden");
+    }
+
+    function pushOrderToChefCache(order) {
+      const raw = JSON.parse(localStorage.getItem("qb:chefQueue") || "[]");
+      const queue = Array.isArray(raw) ? raw : [];
+      const nextOrder = {
+        id: order.id,
+        orderCode: order.orderCode || window.qbOrderId.toDisplayOrderId(order.id),
+        items: Array.isArray(order.items) ? order.items : [],
+        namaPelanggan: order.namaPelanggan || "Pelanggan",
+        meja: order.meja || "Delivery",
+        status: order.status || "received",
+        payment: order.payment || selectedPayment,
+        address: order.address || "-",
+        note: order.note || "",
+        source: order.source || "server"
+      };
+      const existingIndex = queue.findIndex((item) => String(item.id) === String(nextOrder.id));
+      if (existingIndex >= 0) {
+        queue[existingIndex] = nextOrder;
+      } else {
+        queue.unshift(nextOrder);
+      }
+      localStorage.setItem("qb:chefQueue", JSON.stringify(queue.slice(0, 100)));
+    }
+
+    function renderCartItems() {
+      const container = document.getElementById("cartItems");
+      const emptyState = document.getElementById("emptyState");
+      container.innerHTML = "";
+
+      if (cart.length === 0) {
+        emptyState.classList.remove("hidden");
+      } else {
+        emptyState.classList.add("hidden");
+      }
+
+      cart.forEach((item) => {
+        const detailLine = [
+          item.addons?.length ? item.addons.join(", ") : "",
+          item.note ? item.note : ""
+        ].filter(Boolean).join(" • ");
+
+        const card = document.createElement("div");
+        card.className = "bg-surface-container-lowest rounded-lg p-md shadow-sm border border-outline-variant flex gap-md items-center";
+        card.innerHTML = `
+          <img alt="${item.name}" class="w-20 h-20 rounded-lg object-cover" src="${item.image}" />
+          <div class="flex-1 space-y-xs">
+            <div class="flex justify-between items-start">
+              <h3 class="font-headline-md text-body-lg text-on-surface">${item.name}</h3>
+              <p class="font-label-md text-primary font-bold">${toRupiah(item.unitPrice * item.quantity)}</p>
+            </div>
+            <p class="text-body-sm text-on-surface-variant">${detailLine || "Regular item"}</p>
+            <div class="flex items-center justify-between pt-xs">
+              <div class="flex items-center bg-surface-container-high rounded-full px-sm py-xs gap-md">
+                <button data-action="decrement" data-id="${item.id}" class="w-6 h-6 flex items-center justify-center bg-surface rounded-full text-primary shadow-sm active:scale-90 transition-transform">
+                  <span class="material-symbols-outlined text-[18px]">remove</span>
+                </button>
+                <span class="font-label-md text-on-surface">${item.quantity}</span>
+                <button data-action="increment" data-id="${item.id}" class="w-6 h-6 flex items-center justify-center bg-primary text-on-primary rounded-full shadow-sm active:scale-90 transition-transform">
+                  <span class="material-symbols-outlined text-[18px]">add</span>
+                </button>
+              </div>
+              <button data-action="remove" data-id="${item.id}" class="text-error flex items-center gap-xs font-label-sm active:scale-95 transition-transform">
+                <span class="material-symbols-outlined text-[20px]">delete</span>
+                Remove
+              </button>
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function totals() {
+      const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+      const subtotal = cart.reduce((sum, item) => sum + (item.unitPrice * item.quantity), 0);
+      const delivery = totalItems > 0 ? DELIVERY_FEE : 0;
+      const service = totalItems > 0 ? SERVICE_FEE : 0;
+      const total = subtotal + delivery + service;
+      return { totalItems, subtotal, delivery, service, total };
+    }
+
+    function renderBill() {
+      const { totalItems, subtotal, delivery, service, total } = totals();
+      document.getElementById("subtotalLabel").textContent = `Subtotal (${totalItems} items)`;
+      document.getElementById("subtotalValue").textContent = toRupiah(subtotal);
+      document.getElementById("deliveryFeeValue").textContent = toRupiah(delivery);
+      document.getElementById("serviceFeeValue").textContent = toRupiah(service);
+      document.getElementById("totalPaymentValue").textContent = toRupiah(total);
+      document.getElementById("checkoutButton").disabled = totalItems === 0;
+      document.getElementById("checkoutButton").classList.toggle("opacity-50", totalItems === 0);
+      document.getElementById("checkoutButton").classList.toggle("cursor-not-allowed", totalItems === 0);
+    }
+
+    document.getElementById("cartItems").addEventListener("click", (event) => {
+      const actionButton = event.target.closest("button[data-action]");
+      if (!actionButton) return;
+      const action = actionButton.dataset.action;
+      const id = actionButton.dataset.id;
+      const idx = cart.findIndex((item) => item.id === id);
+      if (idx === -1) return;
+
+      if (action === "increment") cart[idx].quantity += 1;
+      if (action === "decrement") cart[idx].quantity = Math.max(1, cart[idx].quantity - 1);
+      if (action === "remove") cart.splice(idx, 1);
+
+      saveCart();
+      renderCartItems();
+      renderBill();
+      if (action === "remove") window.qbToast.showToast("Item dihapus dari keranjang", "success");
+    });
+
+    function applyPaymentSelection(paymentName) {
+      selectedPayment = paymentName;
+      localStorage.setItem("qb:selectedPayment", selectedPayment);
+      document.querySelectorAll(".payment-option").forEach((el) => {
+        el.classList.toggle("is-active", el.dataset.payment === selectedPayment);
+      });
+    }
+
+    document.getElementById("paymentMethods").addEventListener("click", (event) => {
+      const button = event.target.closest(".payment-option");
+      if (!button) return;
+      applyPaymentSelection(button.dataset.payment);
+      window.qbToast.showToast(`Metode pembayaran: ${button.dataset.payment}`, "info");
+    });
+
+    async function submitOrderHttp(payload) {
+      try {
+        const response = await fetch("/api/orders", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        const result = await response.json();
+        if (!response.ok) {
+          return { success: false, error: result?.error?.message || "Gagal membuat order" };
+        }
+        return result;
+      } catch (_error) {
+        return { success: false, error: "Koneksi ke server gagal" };
+      }
+    }
+
+    async function submitOrderSocket(payload) {
+      if (!socket) return { success: false, error: "Socket tidak tersedia" };
+
+      return new Promise((resolve) => {
+        const timeoutId = setTimeout(() => {
+          resolve({ success: false, error: "Socket timeout" });
+        }, 2500);
+
+        socket.emit("newOrder", payload, (result) => {
+          clearTimeout(timeoutId);
+          resolve(result || { success: false, error: "No response from server" });
+        });
+      });
+    }
+
+    async function submitOrder(payload) {
+      const viaHttp = await submitOrderHttp(payload);
+      if (viaHttp.success) return viaHttp;
+
+      const viaSocket = await submitOrderSocket(payload);
+      if (viaSocket.success) return viaSocket;
+
+      return {
+        success: true,
+        data: {
+          id: window.qbOrderId.createLocalRawId(),
+          orderCode: "",
+          items: payload.items,
+          namaPelanggan: payload.namaPelanggan,
+          meja: payload.nomorMeja,
+          status: "received",
+          payment: payload.payment,
+          address: payload.address,
+          note: payload.note || "",
+          source: "demo"
+        }
+      };
+    }
+
+    document.getElementById("checkoutButton").addEventListener("click", async () => {
+      const { totalItems, total } = totals();
+      if (totalItems === 0) return;
+      const deliveryInfo = getDeliveryInfo();
+      const hasValidAddress = deliveryInfo.recipientName.length > 0 && deliveryInfo.address.length > 0;
+      setAddressError(!hasValidAddress);
+      if (!hasValidAddress) return;
+
+      saveDeliveryInfo();
+      const payload = {
+        items: cart.map((item) => `${item.quantity}x ${item.name}`),
+        namaPelanggan: deliveryInfo.recipientName,
+        nomorMeja: "Delivery",
+        payment: selectedPayment,
+        address: deliveryInfo.address,
+        note: deliveryInfo.note,
+      };
+
+      const result = await submitOrder(payload);
+      if (!result || !result.success) return;
+      const order = result.data;
+      const orderCode = order.orderCode || window.qbOrderId.toDisplayOrderId(order.id);
+      pushOrderToChefCache(order);
+      const orderHistory = JSON.parse(localStorage.getItem("qb:orderHistory") || "[]");
+      orderHistory.unshift({
+        id: order.id,
+        orderCode,
+        at: new Date().toISOString(),
+        total,
+        payment: selectedPayment,
+        items: cart.map((item) => `${item.quantity}x ${item.name}`),
+        recipientName: deliveryInfo.recipientName,
+        address: deliveryInfo.address
+      });
+      localStorage.setItem("qb:orderHistory", JSON.stringify(orderHistory.slice(0, 20)));
+      localStorage.setItem("qb:lastCheckout", JSON.stringify({
+        payment: selectedPayment,
+        total,
+        totalItems,
+        orderId: order.id,
+        orderCode,
+        recipientName: deliveryInfo.recipientName,
+        address: deliveryInfo.address,
+        note: deliveryInfo.note,
+        cartItems: cart.map((item) => ({
+          id: item.id,
+          name: item.name,
+          unitPrice: Number(item.unitPrice),
+          quantity: Number(item.quantity),
+          addons: Array.isArray(item.addons) ? item.addons : []
+        })),
+        at: new Date().toISOString()
+      }));
+
+      openPaymentOverlay({
+        payment: selectedPayment,
+        total,
+        recipientName: deliveryInfo.recipientName,
+        address: deliveryInfo.address
+      });
+    });
+
+    document.getElementById("paymentDoneButton").addEventListener("click", () => {
+      closePaymentOverlay();
+      window.qbToast.navigateWithToast("Pembayaran dikonfirmasi", "/order-status.html", "success", 900);
+    });
+
+    document.getElementById("recipientName").value = savedDeliveryInfo.recipientName || "";
+    document.getElementById("deliveryAddress").value = savedDeliveryInfo.address || localStorage.getItem("qb:userLocation") || "";
+    document.getElementById("deliveryNote").value = savedDeliveryInfo.note || "";
+    applyPaymentSelection(selectedPayment);
+    document.getElementById("recipientName").addEventListener("input", () => { setAddressError(false); saveDeliveryInfo(); });
+    document.getElementById("deliveryAddress").addEventListener("input", () => { setAddressError(false); saveDeliveryInfo(); });
+    document.getElementById("deliveryNote").addEventListener("input", saveDeliveryInfo);
+
+    renderCartItems();
+    renderBill();
+  </script>
+</body>
+</html>

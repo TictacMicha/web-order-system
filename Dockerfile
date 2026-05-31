@@ -1,18 +1,15 @@
-# Gunakan image Node.js yang ringan
-FROM node:18-alpine
+FROM node:20-alpine
 
-# Buat direktori kerja di dalam container
-WORKDIR /usr/src/app
+WORKDIR /app
 
-# Salin file package.json dan install dependensi
+ENV NODE_ENV=production
+ENV PORT=3001
+
 COPY package*.json ./
-RUN npm install
+RUN npm ci --omit=dev
 
-# Salin seluruh kode aplikasi
 COPY . .
 
-# Ekspos port 3000
-EXPOSE 3000
+EXPOSE 3001
 
-# Perintah untuk menjalankan aplikasi
-CMD ["node", "server.js"]
+CMD ["npm", "start"]

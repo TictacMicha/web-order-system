@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QuickBite - Category</title>
+  <script src="/js/tailwind-theme.js"></script>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link rel="stylesheet" href="/styles/theme.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  <script id="tailwind-config">tailwind.config = window.quickbiteTailwindConfig;</script>
+  <style>
+    .material-symbols-outlined { font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24; }
+    body { font-family: "Inter", sans-serif; }
+  </style>
+</head>
+<body class="bg-background text-on-surface min-h-screen pb-24">
+  <header class="sticky top-0 z-40 bg-surface shadow-sm w-full max-w-[430px] mx-auto">
+    <div class="flex items-center justify-between px-md py-base w-full">
+      <div class="flex items-center">
+        <h1 id="pageTitle" class="font-display-lg text-headline-md font-bold text-primary">Kategori</h1>
+      </div>
+      <div class="flex items-center gap-sm">
+        <a href="/cart.html" class="flex items-center justify-center p-xs hover:bg-surface-variant/50 transition-colors rounded-full active:scale-95"><span class="material-symbols-outlined text-primary">shopping_cart</span></a>
+      </div>
+    </div>
+  </header>
+
+  <main class="w-full max-w-[430px] mx-auto px-container-margin-mobile py-md">
+    <div id="chipRow" class="flex gap-sm overflow-x-auto pb-sm mb-md"></div>
+    <section id="list" class="space-y-md"></section>
+    <section id="empty" class="hidden bg-surface-container-lowest rounded-xl border border-outline-variant p-md text-sm text-on-surface-variant">
+      Menu untuk kategori ini belum tersedia.
+    </section>
+  </main>
+
+  <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-50 flex justify-around items-center px-container-margin-mobile py-xs bg-white shadow-lg rounded-t-xl">
+    <a class="flex flex-col items-center justify-center text-secondary px-4 py-1" href="/"><span class="material-symbols-outlined">home</span><span class="text-xs">Home</span></a>
+    <a class="flex flex-col items-center justify-center text-secondary px-4 py-1" href="/cart.html"><span class="material-symbols-outlined">shopping_cart</span><span class="text-xs">Cart</span></a>
+    <a class="flex flex-col items-center justify-center text-secondary px-4 py-1" href="/profile.html"><span class="material-symbols-outlined">person</span><span class="text-xs">Profile</span></a>
+  </nav>
+
+  <script src="/js/toast.js"></script>
+  <script>
+    let allMenu = [];
+    const fallbackMenu = [
+      { id: "burger-deluxe", name: "Double Patty Smokehouse", price: 125000, rating: 4.8, eta: "15-20 min", image: "/Image/menu-burger.png", desc: "Dua patty daging sapi dengan cheddar leleh, beef bacon, caramelized onion, dan house sauce.", category: "burger" },
+      { id: "woodfired-pepperoni", name: "Woodfired Pepperoni Pizza", price: 180000, rating: 4.9, eta: "25-30 min", image: "/Image/menu-pizza.png", desc: "Pizza oven klasik dengan pepperoni premium, mozzarella lembut, olive hitam, dan basil segar.", category: "pizza" },
+      { id: "luxury-sushi-boat", name: "Luxury Sushi Boat Set", price: 220000, rating: 4.7, eta: "20-25 min", image: "/Image/menu-sushi.png", desc: "Kombinasi nigiri, sashimi, dan rolls dalam sajian boat mewah dengan ikan segar pilihan harian.", category: "sushi" },
+      { id: "summer-cocktail-flight", name: "Summer Mocktail Flight", price: 30000, rating: 4.9, eta: "5-10 min", image: "/Image/menu-drinks.png", desc: "Tiga minuman segar fruity: mint citrus cooler, berry punch, dan blue lagoon di satu tray.", category: "drinks" }
+    ];
+    const categories = ["all", "burger", "pizza", "sushi", "drinks"];
+    const categoryName = new URLSearchParams(window.location.search).get("name") || "all";
+
+    function toRupiah(value) {
+      return `Rp ${value.toLocaleString("id-ID")}`;
+    }
+
+    function renderChips() {
+      const row = document.getElementById("chipRow");
+      row.innerHTML = categories.map((cat) => {
+        const active = cat === categoryName;
+        return `<a href="/category.html?name=${cat}" class="px-md py-xs rounded-full text-sm border ${active ? "bg-primary text-white border-primary" : "bg-white text-on-surface border-outline-variant"}">${cat.toUpperCase()}</a>`;
+      }).join("");
+    }
+
+    function renderList() {
+      const title = categoryName === "all" ? "Semua Menu" : `Kategori ${categoryName}`;
+      document.getElementById("pageTitle").textContent = title;
+
+      const list = categoryName === "all" ? allMenu : allMenu.filter((item) => item.category === categoryName);
+      const container = document.getElementById("list");
+      const empty = document.getElementById("empty");
+      container.innerHTML = "";
+
+      if (list.length === 0) {
+        empty.classList.remove("hidden");
+        return;
+      }
+      empty.classList.add("hidden");
+
+      list.forEach((item) => {
+        const card = document.createElement("article");
+        card.className = "bg-surface-container-lowest rounded-xl overflow-hidden shadow-md border border-outline-variant/30";
+        card.innerHTML = `
+          <img src="${item.image}" alt="${item.name}" class="w-full h-44 object-cover" />
+          <div class="p-md">
+            <div class="flex items-start justify-between mb-xs">
+              <h3 class="font-semibold">${item.name}</h3>
+              <span class="text-primary font-semibold">${toRupiah(item.price)}</span>
+            </div>
+            <p class="text-sm text-on-surface-variant mb-sm">${item.desc}</p>
+            <div class="flex items-center justify-between">
+              <span class="text-xs text-on-surface-variant">${item.eta}</span>
+              <div class="flex items-center gap-sm">
+                <a href="/menu-detail.html?id=${item.id}" class="px-md py-xs rounded-full bg-primary text-white text-sm">Pilih</a>
+                <button data-add-id="${item.id}" class="w-9 h-9 rounded-full bg-primary text-white flex items-center justify-center">
+                  <span class="material-symbols-outlined text-[18px]">add</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    async function loadMenuFromApi() {
+      const response = await fetch("/api/menu");
+      if (!response.ok) throw new Error("API menu error");
+      const result = await response.json();
+      if (!Array.isArray(result?.data) || result.data.length === 0) {
+        throw new Error("API menu empty");
+      }
+      return result.data;
+    }
+
+    async function loadMenuFromStaticFile() {
+      const response = await fetch("/data/menu.json");
+      if (!response.ok) throw new Error("Static menu error");
+      const result = await response.json();
+      if (!Array.isArray(result) || result.length === 0) {
+        throw new Error("Static menu empty");
+      }
+      return result;
+    }
+
+    async function bootstrap() {
+      renderChips();
+      try {
+        allMenu = await loadMenuFromApi();
+      } catch (_apiError) {
+        try {
+          allMenu = await loadMenuFromStaticFile();
+        } catch (_staticError) {
+          allMenu = fallbackMenu;
+        }
+      }
+      renderList();
+    }
+
+    function readCartCache() {
+      const raw = JSON.parse(localStorage.getItem("qb:cart") || "[]");
+      return Array.isArray(raw) ? raw : [];
+    }
+
+    function writeCartCache(nextCart) {
+      localStorage.setItem("qb:cart", JSON.stringify(nextCart));
+    }
+
+    function addMenuToCart(menu) {
+      const cached = readCartCache();
+      const existingIndex = cached.findIndex((item) => item.menuId === menu.id && !item.note && (!item.addons || item.addons.length === 0));
+      if (existingIndex >= 0) {
+        cached[existingIndex].quantity += 1;
+      } else {
+        cached.push({
+          id: `${menu.id}-${Date.now()}`,
+          menuId: menu.id,
+          name: menu.name,
+          unitPrice: Number(menu.price),
+          quantity: 1,
+          addons: [],
+          note: "",
+          image: menu.image
+        });
+      }
+      writeCartCache(cached);
+    }
+
+    document.getElementById("list").addEventListener("click", (event) => {
+      const button = event.target.closest("button[data-add-id]");
+      if (!button) return;
+      const id = button.dataset.addId;
+      const selectedMenu = allMenu.find((menu) => menu.id === id);
+      if (!selectedMenu) return;
+      addMenuToCart(selectedMenu);
+      button.classList.add("scale-95");
+      setTimeout(() => button.classList.remove("scale-95"), 120);
+      window.qbToast.showToast("Menu ditambahkan ke keranjang", "success");
+    });
+
+    bootstrap();
+  </script>
+</body>
+</html>
